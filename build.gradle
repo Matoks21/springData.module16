@@ -1,0 +1,97 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.0'
+	id 'io.spring.dependency-management' version '1.1.5'
+	id 'jacoco'
+	id 'application'
+}
+
+group = 'com.goit17'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+	targetCompatibility = '17'
+}
+jacoco {
+	toolVersion = "0.8.11"
+}
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.projectlombok:lombok:1.18.20'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.hibernate.orm:hibernate-core:6.1.0.Final'
+	implementation 'org.springframework:spring-orm:6.1.6'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.flywaydb:flyway-core'
+	runtimeOnly 'com.h2database:h2'
+	testImplementation 'org.mockito:mockito-core:3.12.4'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+jar {
+	manifest {
+		attributes "Main-Class": "NoteController"
+	}
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+}
+jar {
+	duplicatesStrategy = 'exclude'
+}
+
+
+application {
+	mainClass = 'NoteController'
+}
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+
+test {
+
+	useJUnitPlatform()
+
+	dependsOn 'cleanTest'
+
+
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+	finalizedBy jacocoTestReport
+	jacoco {
+		destinationFile = layout.buildDirectory.file('jacoco/jacocoTest.exec').get().asFile
+		classDumpDir = layout.buildDirectory.dir('jacoco/classpathdumps').get().asFile
+	}
+}
+
+
+
+jacocoTestReport {
+	dependsOn test
+}
