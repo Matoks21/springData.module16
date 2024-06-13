@@ -17,30 +17,30 @@ public class NoteService {
     }
 
     public List<Note> listAll() {
-        return noteRepository.findAllNotes();
+        return noteRepository.findAll();
     }
 
-
     public void add(Note note) {
-        noteRepository.addNote(note.getTitle(), note.getContent());
+        noteRepository.save(note);
     }
 
     public void deleteById(long id) {
-        noteRepository.deleteNoteById(id);
+        noteRepository.deleteById(id);
     }
 
     public void update(Note note) {
-        noteRepository.updateNote(note.getId(), note.getTitle(), note.getContent());
+        noteRepository.save(note);
     }
 
     public Note getById(long id) {
-        return noteRepository.findNoteById(id)
+        return noteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Note with id " + id + " not found."));
     }
 
     public List<Note> searchByTitle(String keyword) {
         return noteRepository.findByTitleContaining(keyword);
     }
+
 
 }
 

@@ -12,9 +12,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+
 import org.springframework.validation.BindingResult;
 
-public class NoteControllerTest {
+ class NoteControllerTest {
 
     @Mock
     private NoteService noteService;
@@ -91,12 +92,12 @@ public class NoteControllerTest {
         Note note = new Note();
         note.setTitle("Sample Title");
         note.setContent("Sample Content");
-
+        Model model = mock(Model.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(false);
         doNothing().when(noteService).add(note);
 
-        String result = noteController.addNote(note, bindingResult);
+        String result = noteController.addNote(note, bindingResult, model);
 
         assertEquals("redirect:/note/list", result);
         verify(noteService, times(1)).add(note);
@@ -105,11 +106,11 @@ public class NoteControllerTest {
     @Test
     void testAddNoteWithErrors() {
         Note note = new Note();
-
+        Model model = mock(Model.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        String result = noteController.addNote(note, bindingResult);
+        String result = noteController.addNote(note, bindingResult, model);
 
         assertEquals("note/add", result);
         verify(noteService, never()).add(note);

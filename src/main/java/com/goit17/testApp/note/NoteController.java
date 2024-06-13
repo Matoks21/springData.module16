@@ -55,14 +55,13 @@ public class NoteController {
     }
 
     @PostMapping("/note/add")
-    public String addNote(@ModelAttribute @Valid Note note, BindingResult bindingResult) {
+    public String addNote(@ModelAttribute @Valid Note note, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "note/add";
         }
         noteService.add(note);
         return "redirect:/note/list";
     }
-
 
     @GetMapping("/note/search")
     public String searchNotes(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
@@ -76,12 +75,5 @@ public class NoteController {
         return "note/list";
     }
 
-
-    @GetMapping("/note/{id}")
-    public String getNoteById(@PathVariable long id, Model model) {
-        Note note = noteService.getById(id);
-        model.addAttribute("note", note);
-        return "note";
-    }
 
 }
